@@ -19,13 +19,13 @@ class DomainyTest < Test::Unit::TestCase
   describe "Domainy" do
     test_domain "example.com", "example.com"
     test_domain "127.0.0.1", "127.0.0.1"
-    test_domain "example.com.pk", "example.com.pk"
     test_domain "tv.com", "example.tv.com"
-    test_domain "example.com.tv", "example.com.tv"
+    test_domain "example.co.uk", "example.co.uk"
     test_domain "website.co.uk", "secure.email.website.co.uk"
+    test_domain "website.uk.com", "example.website.uk.com"
     test_domain \
-      "thisIsMyMainWebsite.com.cl",
-      "this.is.a.worst.shortly.subdomain.thisIsMyMainWebsite.com.cl"
+      "thisIsMyMainWebsite.com",
+      "this.is.a.worst.shortly.subdomain.thisIsMyMainWebsite.com"
 
     test "handles multiple domains" do
       get "/foo.com/bar.foo.co.uk"

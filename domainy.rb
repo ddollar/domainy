@@ -1,22 +1,27 @@
 require 'sinatra'
 require 'haml'
-require 'tlds'
 
-TEN_YEARS = 60 * 60 * 24 * 30 * 12 * 10 # Overkill
-IPX       = /\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}/
+BASE_DOMAINS_FILE = "base_domains.txt"
+TEN_YEARS         = 60 * 60 * 24 * 30 * 12 * 10 # Overkill
+IPX               = /\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}/
 
 helpers do
+  def base_domains
+    @base_domains = File.read(BASE_DOMAINS_FILE).map do |domain|
+      domain.strip
+    end.reject do |domain|
+      domain.blank?
+    end
+  end
+
   def extract_base_domain(domain)
     return domain if domain =~ IPX
-    parts = domain.split(".")
-    if CTLDS.include?(parts[-1]) &&
-       GTLDS.include?(parts[-2]) && 
-       parts[-3] != "www"
-
-      parts[-3..-1] * "."
-    else
-      parts[-2..-1] * "."
+    base_domains.each do |base_domain|
+      if domain =~ /(.*)\.#{base_domain}$/
+        return [ $1.split(".").last, base_domain ] * "."
+      end
     end
+    domain.split(".")[-2,2].join(".")
   end
 end
 
